@@ -17,12 +17,12 @@ class Player(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0,0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-    
+        self.MOB = 0    
     # Changed movment 
     # def move(self, dx=0, dy=0):
        #  self.x += dx
@@ -63,18 +63,26 @@ class Player(Sprite):
                 self.vy = 0
                 self.rect.y = self.y
 
-        
+    def collide_with_group(self, group, MOB):
+        hits = pg.sprite.spritecollide(self, group, MOB)
+        if hits:
+            if str(hits[0].__class__.__Name__) == "MOB":
+                quit.self
 
     
     def update(self):
-       self.get_keys()
-       self.x += self.vx * self.game.dt
-       self.y += self.vy * self.game.dt
-       self.rect.x = self.x
-       self.rect.y = self.y
-       # Add x and y collision later
-       self.collide_with_walls('x')
-       self.collide_with_walls('y')
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        # add collision later
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        # add collision later
+        self.collide_with_walls('y')
+        self.collide_with_group(self.game.MOB, True)
+      
+      
 
 
 # Create a wall class
@@ -85,7 +93,7 @@ class Wall(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        self.image.fill(YEllOW)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -93,11 +101,10 @@ class Wall(Sprite):
         self.rect.y = y * TILESIZE
     
 
-class PowerUp(Sprite):
+class MOB(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        # add powerup groups later....
-        self.groups = game.all_sprites, game.power_ups
-        Sprite.__init__(self, self.groups)
+        self.groups = game.all_sprites, game.MOB
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(RED)
@@ -107,4 +114,6 @@ class PowerUp(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
    
-        
+    
+
+                
