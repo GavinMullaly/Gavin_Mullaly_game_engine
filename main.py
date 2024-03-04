@@ -1,7 +1,7 @@
 # This was created by: Gavin Mullaly
-# my first source conrol edit 
+# my first source control edit 
 # import necessary modules
-import pygame as pg
+import pygame as pg 
 import sys
 from settings import *
 from sprites import *
