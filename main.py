@@ -1,6 +1,10 @@
 # This was created by: Gavin Mullaly
 # my first source control edit 
 # import necessary modules
+# 3 goals are, 
+# moving walls/maze, 
+# enimie that chases you, 
+# force field
 import pygame as pg 
 import sys
 from settings import *
