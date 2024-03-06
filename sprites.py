@@ -27,7 +27,7 @@ class Player(Sprite):
     # def move(self, dx=0, dy=0):
        #  self.x += dx
         # self.y += dy
-
+    # My Movement systen
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
@@ -42,7 +42,7 @@ class Player(Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
-    
+    # My collision system 
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -62,7 +62,7 @@ class Player(Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
-
+                  # When the player collides with MOB the game ends
     def collide_with_group(self, group, MOB):
         hits = pg.sprite.spritecollide(self, group, MOB)
         if hits:
@@ -100,7 +100,7 @@ class Wall(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
     
-
+# My mob class
 class MOB(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.MOB

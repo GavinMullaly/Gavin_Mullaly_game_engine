@@ -10,7 +10,7 @@ WIDTH = 1024
 HEIGHT = 768
 # this is 24 grids high
 TILESIZE = 32
-
+# All my colors for the game
 SKYBLUE = (111, 186, 234)
 LIGHTGREY = (100,100,100)
 GREEN = (0,255,0)

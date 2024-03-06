@@ -13,7 +13,7 @@ from random import randint
 from os import path
 from time import sleep
 
-# data types; int, string, float, boolean
+# data types; int, string, loat, boolean
 
 class Game:
     def __init__(self):
@@ -46,6 +46,7 @@ class Game:
             for col, tile in enumerate(tiles):
                   #print(row)
                   #print(tiles)
+                  # Map system
                 if tile == '1':
                     Wall(self, col, row)
                 if tile == 'P':
@@ -60,14 +61,14 @@ class Game:
             self.update()
             self.draw()
 
-# I instantiated the player movement system by using the pg.Keys
+
     def quit(self):
         pg.quit()
         sys.exit()
 
     def update(self):
         self.all_sprites.update()
-
+      # System to draw the map
     def draw_grid(self):
             for x in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
