@@ -22,7 +22,8 @@ class Player(Sprite):
         self.vx, self.vy = 0,0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.MOB = 0    
+        self.hitpoints = 100
+        self.status = ""
     # Changed movment 
     # def move(self, dx=0, dy=0):
        #  self.x += dx
@@ -63,11 +64,14 @@ class Player(Sprite):
                 self.vy = 0
                 self.rect.y = self.y
                   # When the player collides with MOB the game ends
-    def collide_with_group(self, group, MOB):
-        hits = pg.sprite.spritecollide(self, group, MOB)
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            if str(hits[0].__class__.__Name__) == "MOB":
-                quit.self
+             if str(hits[0].__class__.__name__) == "Mob":
+                 print(hits[0].__class__.__name__)
+                 print("Collided with mob")
+                 self.hitpoints -= 1
+        
 
     
     def update(self):
@@ -80,7 +84,7 @@ class Player(Sprite):
         self.rect.y = self.y
         # add collision later
         self.collide_with_walls('y')
-        self.collide_with_group(self.game.MOB, True)
+        self.collide_with_group(self.game.mobs, False)
       
       
 
@@ -101,9 +105,9 @@ class Wall(Sprite):
         self.rect.y = y * TILESIZE
     
 # My mob class
-class MOB(pg.sprite.Sprite):
+class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.MOB
+        self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -111,9 +115,10 @@ class MOB(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-   
-    
+        self.vx, self.vy = 100, 100
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.vx, self.vy = MOB_SPEED, 0
+        
 
-                
+    
