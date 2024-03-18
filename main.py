@@ -13,9 +13,10 @@ from sprites import *
 from random import randint
 from os import path
 from time import sleep
+# I imported PyGame to my Game 
 
 # data types; int, string, loat, boolean
-
+# Making my Class Game, Creating the game and displaying the map on PyGame 
 class Game:
     def __init__(self):
         pg.init()
@@ -26,6 +27,7 @@ class Game:
         self.load_data()
      # load save game data etc...   
         # Does slef.run start the game?
+     # Load_Data runs the map 
     def load_data(self):
         game_folder = path.dirname(__file__)
         self.map_data = []
@@ -54,6 +56,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+    # In the Map.txt 1 = wall P= player and M = Mob
+    
     def run(self):
         self.playing = True
         while self.playing:
@@ -66,10 +70,10 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
-
+# When I press the quit button the game ends
     def update(self):
         self.all_sprites.update()
-      # System to draw the map
+      # System that defins the height and width of the map
     def draw_grid(self):
             for x in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
@@ -80,7 +84,7 @@ class Game:
         self.draw_grid()
         self.all_sprites.draw(self.screen)
         pg.display.flip()
-
+    # fills the screen with the correct colors
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
