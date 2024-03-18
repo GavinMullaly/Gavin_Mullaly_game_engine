@@ -2,9 +2,10 @@
 # my first source control edit 
 # import necessary modules
 # 3 goals are, 
-# moving walls/maze, 
-# enimie that chases you, 
-# force field/invincablity
+# Large Maze 
+# Mob thats bounces of the wall
+# coin systen 
+#Finish system
 import pygame as pg 
 import sys
 from settings import *

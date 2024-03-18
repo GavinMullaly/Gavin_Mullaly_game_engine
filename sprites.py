@@ -112,7 +112,7 @@ class Mob(pg.sprite.Sprite):
         self.vx, self.vy = 100, 100
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 1
+        self.speed = 2
     def collide_with_walls(self, dir):
         if dir == 'x':
             # print('colliding on the x')
@@ -126,6 +126,7 @@ class Mob(pg.sprite.Sprite):
             if hits:
                 self.vy *= -1
                 self.rect.y = self.y
+    
     def update(self):
          pass
          self.rect.x += 1
