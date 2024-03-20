@@ -42,6 +42,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
        # self.player = Player(self, 10, 10)
        # for x in range(10, 20):
        #     Wall(self, x, 5)
@@ -56,6 +57,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'C':
+                    Coin(self, col, row)
     # In the Map.txt 1 = wall P= player and M = Mob
     
     def run(self):

@@ -23,6 +23,9 @@ class Player(Sprite):
         self.vx, self.vy = 0,0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
+        self.moneybag = 0
+        self.lives = 10
+ 
         
     # Changed movment 
     # def move(self, dx=0, dy=0):
@@ -86,7 +89,13 @@ class Player(Sprite):
         if self.collide_with_Mob(False):
             if self.lives == 0:
                 self.game.player.kill()
-
+    # When the player hits the mob the game ends
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
+# when the player hits a coin the Player gest + 1 coins
 # Create a wall class
 class Wall(Sprite):
     # initalizing class
@@ -95,13 +104,26 @@ class Wall(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YEllOW)
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
     
+# Using the sytem Mr. Cozort made
+class Coin(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(ORANGE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE    
 # My mob class
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -118,7 +140,7 @@ class Mob(pg.sprite.Sprite):
         self.vx, self.vy = MOB_SPEED, 0 
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-    
+    # when the mob Collides with wall it bounces back in the opposite direction
     def collide_with_walls(self): 
         hits = pg.sprite.spritecollide(self, self.game.walls, False)
         if hits:
