@@ -4,8 +4,7 @@
 # 3 goals are, 
 # Large Maze 
 # Mob thats bounces of the wall
-# coin systen 
-#Finish system
+# coin system
 import pygame as pg 
 import sys
 from settings import *
@@ -25,6 +24,8 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+        
+# this is my first class which is Game, It loads the Map and sets up the game         
      # load save game data etc...   
         # Does slef.run start the game?
      # Load_Data runs the map 
@@ -38,14 +39,12 @@ class Game:
                 print(enumerate(self.map_data))
 
     def new(self):
-        # init all variables, setup groups, instantiate class
+        # initiats all variables, setup groups, instantiate class
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-       # self.player = Player(self, 10, 10)
-       # for x in range(10, 20):
-       #     Wall(self, x, 5)
+     # these are all my classes 
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                   #print(row)
@@ -68,7 +67,8 @@ class Game:
             self.events()
             self.update()
             self.draw()
-
+            
+            
 
     def quit(self):
         pg.quit()
@@ -82,25 +82,35 @@ class Game:
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
             for y in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            
+   
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (x * TILESIZE, y * TILESIZE)
+        surface.blit(text_surface, text_rect)
+        
+
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        pg.display.flip()
+        self.draw_text(self.screen, str(self.player.moneybag), 64, ORANGE, 1,  1)
+    
+    
+
+        
+    
+        
+        pg.display.flip()   
+
     # fills the screen with the correct colors
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                self.quit()
-           # if event.type == pg.KEYDOWN:
-           # if event.key == pg.K_LEFT:
-           #         self.player.move(dx=-1)
-           #     if event.key == pg.K_RIGHT:
-           #         self.player.move(dx=1)   
-           #     if event.key == pg.K_UP:
-           #         self.player.move(dy=-1)
-           #     if event.key == pg.K_DOWN:
-           #        self.player.move(dy=1)   
+                self.quit() 
     
     def show_start_screen(self):
      pass

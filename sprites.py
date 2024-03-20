@@ -25,7 +25,29 @@ class Player(Sprite):
         self.y = y * TILESIZE
         self.moneybag = 0
         self.lives = 10
- 
+   
+    def draw_health_bar(self):
+        if self.lives < 0:
+            self.lives = 10
+        bar_width = int(BAR_LENGTH * (self.lives / 10))
+        bar_rect = pg.Rect(10, 10, bar_width, BAR_HEIGHT)
+        outline_rect = pg.Rect(10, 10, BAR_LENGTH, BAR_HEIGHT)
+        pg.draw.rect(self.game.screen, RED, bar_rect)
+        pg.draw.rect(self.game.screen, WHITE, outline_rect, 2)
+    
+    def draw_health_bar(self):
+        # Calculate width of health bar based on remaining lives
+        health_width = int(BAR_LENGTH * (self.lives / 10))
+        
+        # Draw background of health bar
+        bg_rect = pg.Rect(10, 10, BAR_LENGTH, BAR_HEIGHT)
+        pg.draw.rect(self.game.screen, WHITE, bg_rect)
+
+        # Draw remaining health
+        health_rect = pg.Rect(10, 10, health_width, BAR_HEIGHT)
+        pg.draw.rect(self.game.screen, RED, health_rect)
+        
+        
         
     # Changed movment 
     # def move(self, dx=0, dy=0):
@@ -73,28 +95,44 @@ class Player(Sprite):
             self.lives -=1
             print(self.lives)
             return True
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
     
 
  # My Update system 
     def update(self):
         self.get_keys()
-        # self.power_up_cd.ticking()
+        self.draw_health_bar()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
-        # this order of operations for rect settings and collision is imperative
         self.rect.x = self.x
         self.collide_with_walls('x')
         self.rect.y = self.y
         self.collide_with_walls('y')
         if self.collide_with_Mob(False):
-            if self.lives == 0:
+            if self.lives == -1:
                 self.game.player.kill()
+        
+        # When the player hits the mob the game ends
+        hits = pg.sprite.spritecollide(self, self.game.coins, True)
+        for hit in hits:
+            if isinstance(hit, Coin):
+                self.moneybag += 1
+        
     # When the player hits the mob the game ends
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
+        self.collide_with_group(self.game.coins, True)
+
+        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
+        # if coin_hits:
+        #     print("I got a coin")
 # when the player hits a coin the Player gest + 1 coins
 # Create a wall class
 class Wall(Sprite):
@@ -124,6 +162,7 @@ class Coin(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE    
+
 # My mob class
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
