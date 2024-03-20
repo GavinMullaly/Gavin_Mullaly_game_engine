@@ -23,22 +23,22 @@ class Player(Sprite):
         self.vx, self.vy = 0,0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.moneybag = 0
-        self.lives = 10
-   
+        self.moneybag = 0 # the Player starts out with 0 coins 
+        self.lives = 10 # The player starts out with 10 lives, everytime they player hits a mob they lose a life
+   # This is my Healthbar system I created it Using AI
     def draw_health_bar(self):
         if self.lives < 0:
             self.lives = 10
         bar_width = int(BAR_LENGTH * (self.lives / 10))
-        bar_rect = pg.Rect(10, 10, bar_width, BAR_HEIGHT)
-        outline_rect = pg.Rect(10, 10, BAR_LENGTH, BAR_HEIGHT)
+        bar_rect = pg.Rect(20, 20, bar_width, BAR_HEIGHT)
+        outline_rect = pg.Rect(20, 20, BAR_LENGTH, BAR_HEIGHT)
         pg.draw.rect(self.game.screen, RED, bar_rect)
         pg.draw.rect(self.game.screen, WHITE, outline_rect, 2)
-    
+    # The health Bar is dispayled in Game 
     def draw_health_bar(self):
-        # Calculate width of health bar based on remaining lives
+        # The Health bar Calculates the width of health bar based on remaining lives the player has
         health_width = int(BAR_LENGTH * (self.lives / 10))
-        
+        #  the bar length is as big as the amount of live dived by 10, so if the player has 8 lives left the health bars size will be 8/10 
         # Draw background of health bar
         bg_rect = pg.Rect(10, 10, BAR_LENGTH, BAR_HEIGHT)
         pg.draw.rect(self.game.screen, WHITE, bg_rect)
@@ -46,7 +46,7 @@ class Player(Sprite):
         # Draw remaining health
         health_rect = pg.Rect(10, 10, health_width, BAR_HEIGHT)
         pg.draw.rect(self.game.screen, RED, health_rect)
-        
+        # The health bar is red and is at the top of the screen
         
         
     # Changed movment 

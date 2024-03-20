@@ -2,9 +2,9 @@
 # my first source control edit 
 # import necessary modules
 # 3 goals are, 
-# Large Maze 
-# Mob thats bounces of the wall
-# coin system
+# Health Bar 
+# Timer system
+# Speed Boost
 import pygame as pg 
 import sys
 from settings import *
@@ -16,6 +16,12 @@ from time import sleep
 
 # data types; int, string, loat, boolean
 # Making my Class Game, Creating the game and displaying the map on PyGame 
+
+
+# Initialize screen, clock, player, etc.
+
+
+    
 class Game:
     def __init__(self):
         pg.init()
@@ -24,6 +30,8 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+        self.last_coin_time = 0
+        
         
 # this is my first class which is Game, It loads the Map and sets up the game         
      # load save game data etc...   
@@ -59,6 +67,9 @@ class Game:
                 if tile == 'C':
                     Coin(self, col, row)
     # In the Map.txt 1 = wall P= player and M = Mob
+                self.timer_start = pg.time.get_ticks()
+        self.timer_duration = 30000  # 1/2 minute in milliseconds
+
     
     def run(self):
         self.playing = True
@@ -76,12 +87,32 @@ class Game:
 # When I press the quit button the game ends
     def update(self):
         self.all_sprites.update()
+        if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
+            self.playing = False
+            print("Game Over")
+        if pg.time.get_ticks() - self.last_coin_time >= 10000:  # 10 seconds in milliseconds
+            # Update the timer by adding 10 seconds
+            self.timer_duration += 10000
+            # Update the last coin time
+            self.last_coin_time = pg.time.get_ticks()
+
+        # Ensure the timer doesn't exceed its maximum duration
+        if self.timer_duration > MAX_TIMER_DURATION:
+            self.timer_duration = MAX_TIMER_DURATION
       # System that defins the height and width of the map
     def draw_grid(self):
             for x in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
             for y in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
+                self.playing = False
+                print("Game Over")
+            if pg.time.get_ticks() - self.last_coin_time >= 10:  # 10 seconds in milliseconds
+            # Update the timer by adding 10 seconds
+             self.timer_duration += 10
+            # Update the last coin time
+            
             
    
     def draw_text(self, surface, text, size, color, x, y):
@@ -98,6 +129,9 @@ class Game:
         self.draw_grid()
         self.all_sprites.draw(self.screen)
         self.draw_text(self.screen, str(self.player.moneybag), 64, ORANGE, 1,  1)
+        self.player.draw_health_bar()
+        self.draw_text(self.screen, str((self.timer_duration - (pg.time.get_ticks() - self.timer_start)) // 1000), 64, ORANGE, 29, 1)
+        
     
     
 
