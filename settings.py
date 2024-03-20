@@ -4,7 +4,7 @@ TITLE = "My Epic Game"
 FPS = 30
 
 PLAYER_SPEED = 300
-MOB_SPEED = 200
+MOB_SPEED = 150
 
 WIDTH = 1024
 # this is 32 grids wide
