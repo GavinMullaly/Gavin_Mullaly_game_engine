@@ -28,3 +28,4 @@ BAR_HEIGHT = 10
 MAX_TIMER_DURATION = 180000
 SPEED_BOOST_EXPIRE_EVENT = 10
 INITIAL_PLAYER_SPEED = 300
+# the settings define speed, map size, fps, colors,and more

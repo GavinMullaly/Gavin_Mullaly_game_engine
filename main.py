@@ -11,50 +11,47 @@ from sprites import *
 from random import randint
 from os import path
 from time import sleep
-# I imported PyGame to my Game 
+# I imported PyGame to my Game same with my other files that include Settings and Sprites
 
 # data types; int, string, loat, boolean
-# Making my Class Game, Creating the game and displaying the map on PyGame 
 
-
-# Initialize screen, clock, player, etc.
-
-
-    # this is my first class which is Game, It loads the Map and sets up the game         
-     # load save game data etc...   
-        # Does slef.run start the game?
-     # Load_Data runs the map 
+    # This is my class game, def __init__(self): it intializes the game when it stars
 class Game:
-    def __init__(self):
+    def __init__(self):  
         pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT)) # self.screen displays the width and height of the game 
         pg.display.set_caption(TITLE)
-        self.clock = pg.time.Clock()
+        self.clock = pg.time.Clock() # Creates a clock that the game uses to count the frames per secound
         pg.key.set_repeat(500, 100)
-        self.load_data()
+        self.load_data() 
         self.last_coin_time = 0
         self.speed_boost_duration = 5000  # 5 seconds in milliseconds
-        self.speed_boost_active = False
+        self.speed_boost_active = False # makes sure that the speed boost ins't active at the start
         self.speed_boost_start_time = 0
+    
+    def collect_coin(self, coin):
+        self.player.moneybag += 1  # Increment the player's moneybag
+        self.timer_duration += 10000  # Add 10 seconds to the timer
+        self.last_coin_time = pg.time.get_ticks()  # Update the last coin time
         
-    def load_data(self):
-        game_folder = path.dirname(__file__)
+    def load_data(self): # this loads the game and the map
+        game_folder = path.dirname(__file__) 
         self.map_data = []
         with open(path.join(game_folder,  'map.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
                 print(self.map_data)
-                print(enumerate(self.map_data))
+                print(enumerate(self.map_data)) #this creates the map
 
     def new(self):
         # initiats all variables, setup groups, instantiate class
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
+        self.all_sprites = pg.sprite.Group() #this group creates all sprite groups
+        self.walls = pg.sprite.Group() # these are all my sprite groups
         self.mobs = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.speedboosts = pg.sprite.Group()
-        self.player_speed = PLAYER_SPEED
-        for row, tiles in enumerate(self.map_data):
+        self.player_speed = PLAYER_SPEED # this line creates the players speed attribute
+        for row, tiles in enumerate(self.map_data): # this code creates corresponding tiles from the map text
             for col, tile in enumerate(tiles):
                 if tile == '1':
                     Wall(self, col, row)
@@ -69,47 +66,54 @@ class Game:
     
     # In the Map.txt 1 = wall P= player and M = Mob
             
-            self.timer_start = pg.time.get_ticks()
+            self.timer_start = pg.time.get_ticks() 
         self.timer_duration = 30000  # 1/2 minute in milliseconds
-
+        # this is the amount of time I have to complete the game 30 secs
     
-    def run(self):
+    def run(self): # this makes the game continue to run
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
             self.draw()
-            
-    def quit(self):
+            # when I press the quit button the game ends
+    def quit(self): 
         pg.quit()
         sys.exit()
 # When I press the quit button the game ends
     
-    def update(self):
+    def update(self): # def update, updates the all the games sprites 
+        hits = []
         self.all_sprites.update()
-        if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
-            self.playing = False
-        if pg.time.get_ticks() - self.last_coin_time >= 10000:  # 10 seconds in milliseconds
-        # Update the timer by adding 10 seconds
-         self.timer_duration += 10000
-        # Update the last coin time
-        self.last_coin_time = pg.time.get_ticks()  # Move this line here
-        if  self.speed_boost_active:
-            if pg.time.get_ticks() - self.speed_boost_start_time >= self.speed_boost_duration:
-            # Speed boost expired, reset player speed
-                self.player_speed = PLAYER_SPEED
-            self.speed_boost_active = False
-        else:
-            self.player_speed = PLAYER_SPEED * 2  # Double the player speed
         hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
-        for speedboost in hits:
-            speedboost.apply_effect(self.player)
-        hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
-
-        if self.timer_duration > MAX_TIMER_DURATION:
-            self.timer_duration = MAX_TIMER_DURATION
+        # I created my timer system and speed boost using AI 
+    
+        if pg.time.get_ticks() - self.timer_start >= self.timer_duration: # when coins are collected the Timer adds 10 secs
+             self.playing = False
+        if pg.time.get_ticks() - self.last_coin_time >= 10000:  
+        
+            self.timer_duration += 10000 # + 10 secs in Millisecounds 
+        
+        self.last_coin_time = pg.time.get_ticks()  
        
+        if  self.speed_boost_active:
+            
+                 if pg.time.get_ticks() - self.speed_boost_start_time >= self.speed_boost_duration:
+            
+                    self.player_speed = PLAYER_SPEED 
+                    self.speed_boost_active = False # the boost is not activated until player collects speed boost
+        else: # if the speed boost is active it makes the player go twice the speed
+                self.player_speed = PLAYER_SPEED * 2  # this Doubles the player speed
+                hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
+                for speedboost in hits: #when the player hits the speed boost the code runs 
+                         speedboost.apply_effect(self.player)
+
+                hits = pg.sprite.spritecollide(self.player, self.coins, True)
+                if self.timer_duration > MAX_TIMER_DURATION: # this makes sure the timer doesn't increase to a large amount
+                    self.timer_duration = MAX_TIMER_DURATION
+        
+       # thise code draws the x axis and y axis 
     def draw_grid(self):
             for x in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
@@ -117,13 +121,11 @@ class Game:
                 pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
             if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
                 self.playing = False
-            if pg.time.get_ticks() - self.last_coin_time >= 10:  # 10 seconds in milliseconds
-            # Update the timer by adding 10 seconds
+            if pg.time.get_ticks() - self.last_coin_time >= 10000: 
              self.timer_duration += 10
-            # Update the last coin time
+             # this adds 10 secs to the timer when a coin is collected
             
-            
-   
+        # this code creates the arial font for my text
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -132,34 +134,43 @@ class Game:
         text_rect.topleft = (x * TILESIZE, y * TILESIZE)
         surface.blit(text_surface, text_rect)
         
-
+        # this displays the color and spirtes on the map
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.draw_text(self.screen, str(self.player.moneybag), 64, ORANGE, 1,  1)
+        self.draw_text(self.screen, str(self.player.moneybag), 64, ORANGE, 1,  1) #this is where it displays my coin collector
         self.player.draw_health_bar()
-        self.draw_text(self.screen, str((self.timer_duration - (pg.time.get_ticks() - self.timer_start)) // 1000), 64, ORANGE, 29, 1)
+        self.draw_text(self.screen, str((self.timer_duration - (pg.time.get_ticks() - self.timer_start)) // 1000), 64, ORANGE, 29, 1) #This is where it displays my time text
     
         pg.display.flip()   
 
-    # fills the screen with the correct colors
+    # this makes sure events occur 
     def events(self):
+        coin_hits = None
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit() 
-            if event.type == pg.sprite.spritecollideany and event.sprite == self.player:
-                        if isinstance(event.sprite, SpeedBoost):
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    coin_hits = pg.sprite.spritecollide(self.player, self.coins, True)
+                if coin_hits:  
+                    for coin in coin_hits:
+                        self.collect_coin(coin)
+                    else:
+                       speedboost_hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
+                    if speedboost_hits:
                             self.activate_speed_boost()
-
-    def collect_coin(self, coin):
-        self.coins.remove(coin)  # Remove the collected coin from the group
-        self.player.moneybag += 1  # Increment the player's moneybag
-        self.last_coin_time = pg.time.get_ticks()  # Update the last coin time
+                  # when player hits coin and speedboost it activtes the functions
+             
+      # this was created with the help of AI 
+    def collect_coin(self, coin):  
+        self.player.moneybag += 1  # increseas the player's moneybag
+        self.last_coin_time = pg.time.get_ticks()  # Updates the last coin time
         print("Collected a coin")
-    
+       # when i collect coins it adds to the coin counter
     def activate_speed_boost(self):
-        # Activate speed boost
+        # when the speed boost is active it runs the function
         self.speed_boost_active = True
         self.speed_boost_start_time = pg.time.get_ticks()
     

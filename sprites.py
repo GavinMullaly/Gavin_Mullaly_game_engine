@@ -4,15 +4,9 @@ import pygame as pg
 from pygame.sprite import Group, Sprite
 from settings import * 
 
-# Player is capatilized
-
-# create a Player class
-
-# create a Wall class
-
-# Creating a player class
+# i imported pygame to the sprites 
 # this is my Player class, The player is green he is as big as a tile
-class Player(Sprite):
+class Player(Sprite): # ths player is defined as self 
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
@@ -40,20 +34,17 @@ class Player(Sprite):
         # The Health bar Calculates the width of health bar based on remaining lives the player has
         health_width = int(BAR_LENGTH * (self.lives / 10))
         #  the bar length is as big as the amount of live dived by 10, so if the player has 8 lives left the health bars size will be 8/10 
-        # Draw background of health bar
+        #how big the bar is 
         bg_rect = pg.Rect(10, 10, BAR_LENGTH, BAR_HEIGHT)
         pg.draw.rect(self.game.screen, WHITE, bg_rect)
 
-        # Draw remaining health
+        # this code Draws remaining health
         health_rect = pg.Rect(10, 10, health_width, BAR_HEIGHT)
         pg.draw.rect(self.game.screen, RED, health_rect)
         # The health bar is red and is at the top of the screen
         
         
-    # Changed movment 
-    # def move(self, dx=0, dy=0):
-       #  self.x += dx
-        # self.y += dy
+
     # My Movement system, When pressing arrow keys or wasd the play moves up down left or right
     def get_keys(self): 
         self.vx, self.vy = 0, 0
@@ -89,19 +80,20 @@ class Player(Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
-    # My Mob collision is not finished yet, goal is player takes damage when hit a mob
+    # My wall stop the player and mobs from going through it
     def collide_with_Mob(self, kill):
         hits = pg.sprite.spritecollide(self, self.game.mobs, kill)
         if hits:
             self.lives -=1
             print(self.lives)
             return True
+    # when the player collides with a mob they lose 1 life
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
-                
+                # when a player collides with a coin the add 1 coin to their money bad
     
 
  # My Update system 
@@ -117,14 +109,14 @@ class Player(Sprite):
         if self.collide_with_Mob(False):
             if self.lives == -1:
                 self.game.player.kill()
-        
-        # When the player hits the mob the game ends
+        # The update system checks for keys being pressed to move the player and it checks for collisions with walls and mobs
+        # When the player hits the mob they lose a life
         hits = pg.sprite.spritecollide(self, self.game.coins, True)
         for hit in hits:
             if isinstance(hit, Coin):
                 self.moneybag += 1
-        
-    # When the player hits the mob the game ends
+        # this makes sure the game updates when a player collects a coin
+   
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
@@ -132,10 +124,7 @@ class Player(Sprite):
                 self.moneybag += 1
         self.collide_with_group(self.game.coins, True)
 
-        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
-        # if coin_hits:
-        #     print("I got a coin")
-# when the player hits a coin the Player gest + 1 coins
+# when the player hits a coin the Player gets + 1 coins
 # Create a wall class
 class Wall(Sprite):
     # initalizing class
@@ -150,6 +139,7 @@ class Wall(Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+        # this is my wall class its as big as a tile in the map and is yellow
     
 # Using the sytem Mr. Cozort made
 class Coin(pg.sprite.Sprite):
@@ -164,6 +154,7 @@ class Coin(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE    
+    # this coin system creates the coin to be a tile long as the coin is orange
 # My SpeedBoost class
 class SpeedBoost(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -177,14 +168,14 @@ class SpeedBoost(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE 
+        # the speed boost is purple and is also a tile long
     def apply_effect(self, player):
         # Double the player's speed
         print("Applying speed boost")
         player.player_speed *= 2
-        # Print player's speed after applying the boost
         print("Player speed after boost:", player.player_speed)
-        # Set a timer to revert the player's speed after a certain duration
         pg.time.set_timer(SPEED_BOOST_EXPIRE_EVENT, 5000)
+        # this makes sure the player doesnt get a speed boost for the entire game
 
 # My mob class
 class Mob(pg.sprite.Sprite):
@@ -208,10 +199,11 @@ class Mob(pg.sprite.Sprite):
         if hits:
             self.vx *= -1
             self.rect.x = self. x
-    
+     # self.vx = -1 means it goes in the opposite direction when touching a wall
     def update(self):
          self.x += self.vx * self.game.dt
          self.y += self.vy * self.game.dt
          self.rect.x = self.x
          self.collide_with_walls()
          self.rect.y = self.y
+         # this makes sure the mobs update when touching a wall
