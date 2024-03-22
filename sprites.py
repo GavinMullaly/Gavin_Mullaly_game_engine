@@ -21,15 +21,8 @@ class Player(Sprite): # ths player is defined as self
         self.lives = 10 # The player starts out with 10 lives, everytime they player hits a mob they lose a life
    # This is my Healthbar system I created it Using AI
         self.player_speed = INITIAL_PLAYER_SPEED
-    def draw_health_bar(self):
-        if self.lives < 0:
-            self.lives = 10
-        bar_width = int(BAR_LENGTH * (self.lives / 10))
-        bar_rect = pg.Rect(20, 20, bar_width, BAR_HEIGHT)
-        outline_rect = pg.Rect(20, 20, BAR_LENGTH, BAR_HEIGHT)
-        pg.draw.rect(self.game.screen, RED, bar_rect)
-        pg.draw.rect(self.game.screen, WHITE, outline_rect, 2)
-    # The health Bar is dispayled in Game 
+    
+    
     def draw_health_bar(self):
         # The Health bar Calculates the width of health bar based on remaining lives the player has
         health_width = int(BAR_LENGTH * (self.lives / 10))
@@ -116,13 +109,8 @@ class Player(Sprite): # ths player is defined as self
             if isinstance(hit, Coin):
                 self.moneybag += 1
         # this makes sure the game updates when a player collects a coin
-   
-    def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
-        if hits:
-            if str(hits[0].__class__.__name__) == "Coin":
-                self.moneybag += 1
-        self.collide_with_group(self.game.coins, True)
+        
+            
 
 # when the player hits a coin the Player gets + 1 coins
 # Create a wall class
@@ -170,13 +158,8 @@ class SpeedBoost(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE 
         # the speed boost is purple and is also a tile long
     def apply_effect(self, player):
-        # Double the player's speed
-        print("Applying speed boost")
-        player.player_speed *= 2
-        print("Player speed after boost:", player.player_speed)
-        pg.time.set_timer(SPEED_BOOST_EXPIRE_EVENT, 5000)
-        # this makes sure the player doesnt get a speed boost for the entire game
-
+        player.player_speed *= 2  # Double the player's speed
+        player.speed_boost_active = True
 # My mob class
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
