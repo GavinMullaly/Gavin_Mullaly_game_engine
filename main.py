@@ -1,6 +1,5 @@
 # This was created by: Gavin Mullaly
-# my first source control edit 
-# import necessary modules
+# My game was created with the Help of Mr. Cozort and AI
 # 3 goals are, 
 # Health Bar 
 # Timer system
@@ -21,7 +20,10 @@ from time import sleep
 # Initialize screen, clock, player, etc.
 
 
-    
+    # this is my first class which is Game, It loads the Map and sets up the game         
+     # load save game data etc...   
+        # Does slef.run start the game?
+     # Load_Data runs the map 
 class Game:
     def __init__(self):
         pg.init()
@@ -31,12 +33,10 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.load_data()
         self.last_coin_time = 0
+        self.speed_boost_duration = 5000  # 5 seconds in milliseconds
+        self.speed_boost_active = False
+        self.speed_boost_start_time = 0
         
-        
-# this is my first class which is Game, It loads the Map and sets up the game         
-     # load save game data etc...   
-        # Does slef.run start the game?
-     # Load_Data runs the map 
     def load_data(self):
         game_folder = path.dirname(__file__)
         self.map_data = []
@@ -52,22 +52,24 @@ class Game:
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-     # these are all my classes 
+        self.speedboosts = pg.sprite.Group()
+        self.player_speed = PLAYER_SPEED
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
-                  #print(row)
-                  #print(tiles)
-                  # Map system
                 if tile == '1':
                     Wall(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
                 if tile == 'M':
-                    Mob(self, col, row)
+                     Mob(self, col, row)
                 if tile == 'C':
-                    Coin(self, col, row)
+                     Coin(self, col, row)
+                if tile == 'S':
+                    SpeedBoost(self, col, row)
+    
     # In the Map.txt 1 = wall P= player and M = Mob
-                self.timer_start = pg.time.get_ticks()
+            
+            self.timer_start = pg.time.get_ticks()
         self.timer_duration = 30000  # 1/2 minute in milliseconds
 
     
@@ -79,27 +81,35 @@ class Game:
             self.update()
             self.draw()
             
-            
-
     def quit(self):
         pg.quit()
         sys.exit()
 # When I press the quit button the game ends
+    
     def update(self):
         self.all_sprites.update()
         if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
             self.playing = False
-            print("Game Over")
         if pg.time.get_ticks() - self.last_coin_time >= 10000:  # 10 seconds in milliseconds
-            # Update the timer by adding 10 seconds
-            self.timer_duration += 10000
-            # Update the last coin time
-            self.last_coin_time = pg.time.get_ticks()
+        # Update the timer by adding 10 seconds
+         self.timer_duration += 10000
+        # Update the last coin time
+        self.last_coin_time = pg.time.get_ticks()  # Move this line here
+        if  self.speed_boost_active:
+            if pg.time.get_ticks() - self.speed_boost_start_time >= self.speed_boost_duration:
+            # Speed boost expired, reset player speed
+                self.player_speed = PLAYER_SPEED
+            self.speed_boost_active = False
+        else:
+            self.player_speed = PLAYER_SPEED * 2  # Double the player speed
+        hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
+        for speedboost in hits:
+            speedboost.apply_effect(self.player)
+        hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
 
-        # Ensure the timer doesn't exceed its maximum duration
         if self.timer_duration > MAX_TIMER_DURATION:
             self.timer_duration = MAX_TIMER_DURATION
-      # System that defins the height and width of the map
+       
     def draw_grid(self):
             for x in range(0, WIDTH, TILESIZE):
                 pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
@@ -107,7 +117,6 @@ class Game:
                 pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
             if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
                 self.playing = False
-                print("Game Over")
             if pg.time.get_ticks() - self.last_coin_time >= 10:  # 10 seconds in milliseconds
             # Update the timer by adding 10 seconds
              self.timer_duration += 10
@@ -131,13 +140,7 @@ class Game:
         self.draw_text(self.screen, str(self.player.moneybag), 64, ORANGE, 1,  1)
         self.player.draw_health_bar()
         self.draw_text(self.screen, str((self.timer_duration - (pg.time.get_ticks() - self.timer_start)) // 1000), 64, ORANGE, 29, 1)
-        
     
-    
-
-        
-    
-        
         pg.display.flip()   
 
     # fills the screen with the correct colors
@@ -145,6 +148,20 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit() 
+            if event.type == pg.sprite.spritecollideany and event.sprite == self.player:
+                        if isinstance(event.sprite, SpeedBoost):
+                            self.activate_speed_boost()
+
+    def collect_coin(self, coin):
+        self.coins.remove(coin)  # Remove the collected coin from the group
+        self.player.moneybag += 1  # Increment the player's moneybag
+        self.last_coin_time = pg.time.get_ticks()  # Update the last coin time
+        print("Collected a coin")
+    
+    def activate_speed_boost(self):
+        # Activate speed boost
+        self.speed_boost_active = True
+        self.speed_boost_start_time = pg.time.get_ticks()
     
     def show_start_screen(self):
      pass

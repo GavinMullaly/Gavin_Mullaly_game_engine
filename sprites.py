@@ -1,7 +1,7 @@
 # This file was created by Gavin Mullaly
 
 import pygame as pg
-from pygame.sprite import Sprite
+from pygame.sprite import Group, Sprite
 from settings import * 
 
 # Player is capatilized
@@ -26,6 +26,7 @@ class Player(Sprite):
         self.moneybag = 0 # the Player starts out with 0 coins 
         self.lives = 10 # The player starts out with 10 lives, everytime they player hits a mob they lose a life
    # This is my Healthbar system I created it Using AI
+        self.player_speed = INITIAL_PLAYER_SPEED
     def draw_health_bar(self):
         if self.lives < 0:
             self.lives = 10
@@ -58,14 +59,14 @@ class Player(Sprite):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -PLAYER_SPEED
+            self.vx = -self.player_speed
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = PLAYER_SPEED
+            self.vx = self.player_speed
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -PLAYER_SPEED
+            self.vy = -self.player_speed
         if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = PLAYER_SPEED
-        if self.vx != 0 and self.vy != 0:
+            self.vy = self.player_speed
+        if  self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
     # when the player touches the wall it stops it from going through the wall
@@ -100,6 +101,7 @@ class Player(Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
+                
     
 
  # My Update system 
@@ -162,6 +164,27 @@ class Coin(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE    
+# My SpeedBoost class
+class SpeedBoost(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.speedboosts
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(PURPLE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE 
+    def apply_effect(self, player):
+        # Double the player's speed
+        print("Applying speed boost")
+        player.player_speed *= 2
+        # Print player's speed after applying the boost
+        print("Player speed after boost:", player.player_speed)
+        # Set a timer to revert the player's speed after a certain duration
+        pg.time.set_timer(SPEED_BOOST_EXPIRE_EVENT, 5000)
 
 # My mob class
 class Mob(pg.sprite.Sprite):
