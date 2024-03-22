@@ -29,10 +29,6 @@ class Game:
         self.speed_boost_active = False # makes sure that the speed boost ins't active at the start
         self.speed_boost_start_time = 0
     
-    def collect_coin(self, coin):
-        self.player.moneybag += 1  # Increment the player's moneybag
-        self.last_coin_time = pg.time.get_ticks()  # Update the last coin time
-    
     def activate_speed_boost(self):
         # Activate speed boost
         self.speed_boost_active = True
@@ -103,19 +99,6 @@ class Game:
             self.player_speed = PLAYER_SPEED
         
         
-        hits = pg.sprite.spritecollide(self.player, self.coins, True)
-        for hit in hits:
-         if isinstance(hit, Coin):
-            self.collect_coin(hit)  # Call collect_coin method when a coin is collected
-    
-    # Add 10 seconds to the timer when a coin is collected
-        if hits:
-            self.timer_duration += 10000
-        if self.timer_duration > MAX_TIMER_DURATION:
-            self.timer_duration = MAX_TIMER_DURATION
-        
-        if pg.time.get_ticks() - self.timer_start >= self.timer_duration:
-            self.playing = False
         
        # thise code draws the x axis and y axis 
     def draw_grid(self):
@@ -168,12 +151,6 @@ class Game:
                     if speedboost_hits:
                             self.activate_speed_boost()
                   # when player hits coin and speedboost it activtes the functions
-             
-      # this was created with the help of AI 
-    def collect_coin(self, coin):  
-        self.player.moneybag += 1  # increseas the player's moneybag
-        self.last_coin_time = pg.time.get_ticks()  # Updates the last coin time
-        print("Collected a coin")
        # when i collect coins it adds to the coin counter
     def activate_speed_boost(self):
         # when the speed boost is active it runs the function

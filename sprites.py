@@ -80,13 +80,9 @@ class Player(Sprite): # ths player is defined as self
             self.lives -=1
             print(self.lives)
             return True
+        
     # when the player collides with a mob they lose 1 life
-    def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
-        if hits:
-            if str(hits[0].__class__.__name__) == "Coin":
-                self.moneybag += 1
-                # when a player collides with a coin the add 1 coin to their money bad
+                
     
 
  # My Update system 
@@ -108,8 +104,14 @@ class Player(Sprite): # ths player is defined as self
         for hit in hits:
             if isinstance(hit, Coin):
                 self.moneybag += 1
-        # this makes sure the game updates when a player collects a coin
-        
+         #this makes sure the game updates when a player collects a coin
+        hits = pg.sprite.spritecollide(self, self.game.coins, True)
+        if hits:
+                self.timer_duration += 10000  # Add 10 seconds to the timer
+                if self.timer_duration > MAX_TIMER_DURATION:
+                    self.timer_duration = MAX_TIMER_DURATION
+                if pg.time.get_ticks() - self.last_coin_time >= 10000: 
+                    self.timer_duration += 10000
             
 
 # when the player hits a coin the Player gets + 1 coins
@@ -142,6 +144,8 @@ class Coin(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE    
+    
+
     # this coin system creates the coin to be a tile long as the coin is orange
 # My SpeedBoost class
 class SpeedBoost(pg.sprite.Sprite):
@@ -190,3 +194,4 @@ class Mob(pg.sprite.Sprite):
          self.collide_with_walls()
          self.rect.y = self.y
          # this makes sure the mobs update when touching a wall
+
