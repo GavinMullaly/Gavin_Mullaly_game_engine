@@ -4,6 +4,7 @@
 # Health Bar 
 # Timer system
 # Speed Boost
+# My beta goal is to add 2 more levels with a boss and end screenx
 import pygame as pg 
 import sys
 from settings import *
@@ -11,6 +12,12 @@ from sprites import *
 from random import randint
 from os import path
 from time import sleep
+# How does def_load_data work and why do we need it in out code?
+
+# Five things that make a game Good is, 1# its enjoyable and fun 2# its not to easy, 
+# 3# its not to hard 4# There is a pourpose to the game and lastly 5# Everything works 
+
+
 # I imported PyGame to my Game same with my other files that include Settings and Sprites
 
 # data types; int, string, loat, boolean
@@ -28,6 +35,8 @@ class Game:
         self.speed_boost_duration = 5000  # 5 seconds in milliseconds
         self.speed_boost_active = False # makes sure that the speed boost ins't active at the start
         self.speed_boost_start_time = 0
+        self.current_map = "map_1.txt"
+    
     
     def activate_speed_boost(self):
         # Activate speed boost
@@ -38,6 +47,8 @@ class Game:
     def load_data(self): # this loads the game and the map
         game_folder = path.dirname(__file__) 
         self.map_data = []
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'images')
         with open(path.join(game_folder,  'map.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
@@ -50,6 +61,7 @@ class Game:
         self.walls = pg.sprite.Group() # these are all my sprite groups
         self.mobs = pg.sprite.Group()
         self.coins = pg.sprite.Group()
+        self.finishes=pg.sprite.Group()
         self.speedboosts = pg.sprite.Group()
         self.player_speed = PLAYER_SPEED # this line creates the players speed attribute
         for row, tiles in enumerate(self.map_data): # this code creates corresponding tiles from the map text
@@ -64,11 +76,13 @@ class Game:
                      Coin(self, col, row)
                 if tile == 'S':
                     SpeedBoost(self, col, row)
+                if tile == 'F':
+                    Finish(self,col, row)
     
     # In the Map.txt 1 = wall P= player and M = Mob
             
             self.timer_start = pg.time.get_ticks() 
-        self.timer_duration = 30000  # 1/2 minute in milliseconds
+        self.timer_duration = 60000  # 1/2 minute in milliseconds
         # this is the amount of time I have to complete the game 30 secs
     
     def run(self): # this makes the game continue to run
@@ -97,6 +111,9 @@ class Game:
             self.player_speed = PLAYER_SPEED * 2  # Double player speed
         else:
             self.player_speed = PLAYER_SPEED
+        finish_hits = pg.sprite.spritecollide(self.player, self.finishes, False)
+        for finish in finish_hits:
+            finish.Collide_With_Finish(self, "map_2.txt")
         
         
         
@@ -165,6 +182,45 @@ class Game:
     
 
 # I have instantiated the Game
+def load_next_map(self, map_2):
+        # Load the next map from the specified filename
+        self.current_map =  map.txt
+        with open(map.txt, 'rt') as f:
+            self.map_data = []
+            for line in f:
+                self.map_data.append(line.strip())
+
+        # Clear existing sprite groups
+        self.all_sprites.empty()
+        self.walls.empty()
+        self.mobs.empty()
+        self.coins.empty()
+        self.speedboosts.empty()
+        self.finishes.empty()
+
+
+        # Create new sprites based on the loaded map data
+        for row, tiles in enumerate(self.map_data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    Wall(self, col, row)
+                elif tile == 'P':
+                    self.player = Player(self, col, row)
+                elif tile == 'M':
+                    Mob(self, col, row)
+                elif tile == 'C':
+                    Coin(self, col, row)
+                elif tile == 'S':
+                    SpeedBoost(self, col, row)
+                elif tile == 'F':
+                    Finish(self, col, row)
+
+
+
+
+
+
+
 g = Game()
 while True:
     g.new()

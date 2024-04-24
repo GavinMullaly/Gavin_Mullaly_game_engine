@@ -3,6 +3,26 @@
 import pygame as pg
 from pygame.sprite import Group, Sprite
 from settings import * 
+from os import path
+
+#SPRITESHEET = "theBell.png"
+# needed for animated sprite
+game_folder = path.dirname(__file__)
+img_folder = path.join(game_folder, 'images')
+
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+   # def __init__(self, filename):
+        #self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width * 1, height * 1))
+        return image
+
 
 # i imported pygame to the sprites 
 # this is my Player class, The player is green he is as big as a tile
@@ -20,7 +40,22 @@ class Player(Sprite): # ths player is defined as self
         self.moneybag = 0 # the Player starts out with 0 coins 
         self.lives = 10 # The player starts out with 10 lives, everytime they player hits a mob they lose a life
    # This is my Healthbar system I created it Using AI
+        #self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
+        #self.load_images()
+        #self.image = self.standing_frames[0]
+        self.rect = self.image.get_rect()
+        self.current_frame = 0
+        self.last_update = 0
+        self.material = True
+        self.jumping = False
+        self.walking = False
+        self.vx, self.vy = 0, 0
         self.player_speed = INITIAL_PLAYER_SPEED
+        self.rect = self.image.get_rect()
+        self.current_frame = 0
+        self.last_update = 0
+
+
     
     
     def draw_health_bar(self):
@@ -193,5 +228,36 @@ class Mob(pg.sprite.Sprite):
          self.rect.x = self.x
          self.collide_with_walls()
          self.rect.y = self.y
+      #   self.animate()
+        # self.get_keys()
          # this makes sure the mobs update when touching a wall
+   # def load_images(self):
+      #  self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32), 
+                              #  self.spritesheet.get_image(32,0, 32, 32)]
+        
+    #def animate(self):
+        #now = pg.time.get_ticks()
+        #if now - self.last_update > 350:
+           # self.rect = self.image.get_rect()
+    
+            
+class Finish(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.finishes
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE 
+    
+    def Collide_With_Finish(self, next_map):
+        # Method implementation...
+        # Load the next map using the provided filename
+        self.game.load_next_map(next_map)
+        finish_hits = pg.sprite.spritecollide(self.player, self.finishes, False)
+        for finish in finish_hits:
+            finish.Collide_With_Finish("map_2.txt")
 
+        

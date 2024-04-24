@@ -22,10 +22,12 @@ ORANGE = (255,165,0)
 WHITE = (255, 255, 255)
 BLACK = (0,0,0)
 PURPLE = ((128, 0, 128))
+BLUE = (0, 0, 255)
 
 BAR_LENGTH = 100
 BAR_HEIGHT = 10
 MAX_TIMER_DURATION = 10000000
 SPEED_BOOST_EXPIRE_EVENT = 10
 INITIAL_PLAYER_SPEED = 300
+map_2 = "next_map.txt"
 # the settings define speed, map size, fps, colors,and more
