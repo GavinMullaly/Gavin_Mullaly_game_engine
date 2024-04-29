@@ -113,7 +113,7 @@ class Game:
             self.player_speed = PLAYER_SPEED
         finish_hits = pg.sprite.spritecollide(self.player, self.finishes, False)
         for finish in finish_hits:
-            finish.Collide_With_Finish(self, "map_2.txt")
+            finish.Collide_With_Finish(self.player, "map_2.txt")
         
         
         
@@ -182,9 +182,9 @@ class Game:
     
 
 # I have instantiated the Game
-def load_next_map(self, map_2):
+    def load_next_map(self, next_map):
         # Load the next map from the specified filename
-        self.current_map =  map.txt
+        self.current_map =  next_map
         with open(map.txt, 'rt') as f:
             self.map_data = []
             for line in f:

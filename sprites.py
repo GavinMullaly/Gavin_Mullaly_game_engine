@@ -228,6 +228,7 @@ class Mob(pg.sprite.Sprite):
          self.rect.x = self.x
          self.collide_with_walls()
          self.rect.y = self.y
+         
       #   self.animate()
         # self.get_keys()
          # this makes sure the mobs update when touching a wall
@@ -252,12 +253,11 @@ class Finish(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE 
     
-    def Collide_With_Finish(self, next_map):
+    def Collide_With_Finish(self, player, next_map):
         # Method implementation...
         # Load the next map using the provided filename
-        self.game.load_next_map(next_map)
-        finish_hits = pg.sprite.spritecollide(self.player, self.finishes, False)
+        finish_hits = pg.sprite.spritecollide(player, self.game.finishes, False)
         for finish in finish_hits:
-            finish.Collide_With_Finish("map_2.txt")
+            self.game.load_next_map(next_map) 
 
         
