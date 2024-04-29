@@ -185,7 +185,7 @@ class Game:
     def load_next_map(self, next_map):
         # Load the next map from the specified filename
         self.current_map =  next_map
-        with open(map.txt, 'rt') as f:
+        with open(next_map, 'rt') as f: 
             self.map_data = []
             for line in f:
                 self.map_data.append(line.strip())
@@ -194,7 +194,6 @@ class Game:
         self.all_sprites.empty()
         self.walls.empty()
         self.mobs.empty()
-        self.coins.empty()
         self.speedboosts.empty()
         self.finishes.empty()
 
