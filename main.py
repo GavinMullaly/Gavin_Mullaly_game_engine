@@ -181,7 +181,7 @@ class Game:
      pass
     
 
-# I have instantiated the Game
+# I Used Chat GPT to create new maps when I collide with the finish blocks
     def load_next_map(self, next_map):
         # Load the next map from the specified filename
         self.current_map =  next_map

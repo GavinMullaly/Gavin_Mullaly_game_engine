@@ -253,6 +253,7 @@ class Finish(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE 
     
+   # I used chat GPT to create my finish class 
     def Collide_With_Finish(self, player, next_map):
         # Method implementation...
         # Load the next map using the provided filename
