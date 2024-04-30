@@ -4,7 +4,7 @@
 # Health Bar 
 # Timer system
 # Speed Boost
-# My beta goal is to add 2 more levels with a boss and end screenx
+# My beta goal is to add 2 more levels with a boss and end screen
 import pygame as pg 
 import sys
 from settings import *
@@ -12,6 +12,7 @@ from sprites import *
 from random import randint
 from os import path
 from time import sleep
+from random import randint
 # How does def_load_data work and why do we need it in out code?
 
 # Five things that make a game Good is, 1# its enjoyable and fun 2# its not to easy, 
@@ -153,20 +154,23 @@ class Game:
 
     # this makes sure events occur 
     def events(self):
-        coin_hits = None
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                self.quit() 
+                self.quit()
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
+                # Call the teleport method of the player when spacebar is pressed
+                    self.player.teleport()
+                # Handle other actions related to spacebar press here
+                # For example, coin collection, speed boost activation, etc.
                     coin_hits = pg.sprite.spritecollide(self.player, self.coins, True)
-                if coin_hits:  
-                    for coin in coin_hits:
-                        self.collect_coin(coin)
+                    if coin_hits:  
+                        for coin in coin_hits:
+                            self.collect_coin(coin)
                     else:
-                         speedboost_hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
+                        speedboost_hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
                     if speedboost_hits:
-                            self.activate_speed_boost()
+                        self.activate_speed_boost()
                   # when player hits coin and speedboost it activtes the functions
        # when i collect coins it adds to the coin counter
     def activate_speed_boost(self):

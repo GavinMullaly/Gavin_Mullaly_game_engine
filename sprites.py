@@ -4,6 +4,8 @@ import pygame as pg
 from pygame.sprite import Group, Sprite
 from settings import * 
 from os import path
+from random import randint
+import random
 
 #SPRITESHEET = "theBell.png"
 # needed for animated sprite
@@ -54,6 +56,29 @@ class Player(Sprite): # ths player is defined as self
         self.rect = self.image.get_rect()
         self.current_frame = 0
         self.last_update = 0
+        self.last_direction = None
+    def teleport(self):
+        # Define the possible movement directions: up, down, left, right
+        directions = [(0, -TILESIZE), (0, TILESIZE), (-TILESIZE, 0), (TILESIZE, 0)]
+        
+        # Choose the last movement direction if available,
+        # otherwise choose a random direction
+        if self.last_direction:
+            new_direction = self.last_direction
+        else:
+            new_direction = random.choice(directions)
+
+        # Update the player's position based on the chosen direction
+        new_x = self.rect.x + new_direction[0]
+        new_y = self.rect.y + new_direction[1]
+
+        # Check if the new position is within the game boundaries
+        if 0 <= new_x < WIDTH and 0 <= new_y < HEIGHT:
+            self.rect.x = new_x
+            self.rect.y = new_y
+
+        # Update the last direction
+        self.last_direction = new_direction
 
 
     
