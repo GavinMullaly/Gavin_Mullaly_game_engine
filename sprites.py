@@ -7,6 +7,8 @@ from os import path
 from random import randint
 import random
 
+vec =pg.math.Vector2
+
 #SPRITESHEET = "theBell.png"
 # needed for animated sprite
 game_folder = path.dirname(__file__)
@@ -56,30 +58,20 @@ class Player(Sprite): # ths player is defined as self
         self.rect = self.image.get_rect()
         self.current_frame = 0
         self.last_update = 0
-        self.last_direction = None
-    def teleport(self):
-        # Define the possible movement directions: up, down, left, right
-        directions = [(0, -TILESIZE), (0, TILESIZE), (-TILESIZE, 0), (TILESIZE, 0)]
+        self.dir = vec(0,0)
+    
+    def set_dir(self, d):
+        self.dir = d
+        #return (0,0)
+    def get_dir(self):
+        return vec(self.dir)
+   
+    def teleport(self, direction):
+        self.x += TILESIZE * 2 * direction[0]
+        self.y += TILESIZE * 2 * direction[1]
         
-        # Choose the last movement direction if available,
-        # otherwise choose a random direction
-        if self.last_direction:
-            new_direction = self.last_direction
-        else:
-            new_direction = random.choice(directions)
-
-        # Update the player's position based on the chosen direction
-        new_x = self.rect.x + new_direction[0]
-        new_y = self.rect.y + new_direction[1]
-
-        # Check if the new position is within the game boundaries
-        if 0 <= new_x < WIDTH and 0 <= new_y < HEIGHT:
-            self.rect.x = new_x
-            self.rect.y = new_y
-
-        # Update the last direction
-        self.last_direction = new_direction
-
+        
+        
 
     
     
@@ -104,15 +96,24 @@ class Player(Sprite): # ths player is defined as self
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.player_speed
+            self.set_dir((-1,0))
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = self.player_speed
+            self.vx = self.player_speed      
+            self.set_dir((1,0))
         if keys[pg.K_UP] or keys[pg.K_w]:
             self.vy = -self.player_speed
+            self.set_dir((0,-1))
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.player_speed
+            self.set_dir((0,1))
         if  self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+        if keys[pg.K_SPACE]:
+            print(self.get_dir())
+            self.teleport(self.get_dir())
+            
+            
     # when the player touches the wall it stops it from going through the wall
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -151,27 +152,24 @@ class Player(Sprite): # ths player is defined as self
         self.draw_health_bar()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
-        self.rect.x = self.x
+        #self.rect.x = self.x + self.teleport
         self.collide_with_walls('x')
-        self.rect.y = self.y
+        #self.rect.y = self.y + self.teleport
         self.collide_with_walls('y')
         if self.collide_with_Mob(False):
             if self.lives == -1:
                 self.game.player.kill()
-        # The update system checks for keys being pressed to move the player and it checks for collisions with walls and mobs
-        # When the player hits the mob they lose a life
         hits = pg.sprite.spritecollide(self, self.game.coins, True)
         for hit in hits:
             if isinstance(hit, Coin):
                 self.moneybag += 1
-         #this makes sure the game updates when a player collects a coin
         hits = pg.sprite.spritecollide(self, self.game.coins, True)
         if hits:
-                self.timer_duration += 10000  # Add 10 seconds to the timer
-                if self.timer_duration > MAX_TIMER_DURATION:
-                    self.timer_duration = MAX_TIMER_DURATION
-                if pg.time.get_ticks() - self.last_coin_time >= 10000: 
-                    self.timer_duration += 10000
+            self.timer_duration += 10000
+            if self.timer_duration > MAX_TIMER_DURATION:
+               self.timer_duration = MAX_TIMER_DURATION
+            if pg.time.get_ticks() - self.last_coin_time >= 10000: 
+                self.timer_duration += 10000
             
 
 # when the player hits a coin the Player gets + 1 coins

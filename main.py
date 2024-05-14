@@ -2,8 +2,8 @@
 # My game was created with the Help of Mr. Cozort and AI
 # 3 goals are, 
 # Health Bar 
-# Timer system
-# Speed Boost
+# Timer system        
+# Speed Boost                               
 # My beta goal is to add 2 more levels with a boss and end screen
 import pygame as pg 
 import sys
@@ -24,6 +24,8 @@ from random import randint
 # data types; int, string, loat, boolean
 
     # This is my class game, def __init__(self): it intializes the game when it stars
+
+
 class Game:
     def __init__(self):  
         pg.init()
@@ -132,7 +134,7 @@ class Game:
 
              # this adds 10 secs to the timer when a coin is collected
             
-        # this code creates the arial font for my text
+        # this code       creates the arial font for my text
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -140,8 +142,8 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x * TILESIZE, y * TILESIZE)
         surface.blit(text_surface, text_rect)
-        
-        # this displays the color and spirtes on the map
+                  
+        # t hi s    displays the color and spirtes on the map  
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
@@ -159,17 +161,18 @@ class Game:
                 self.quit()
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
-                # Call the teleport method of the player when spacebar is pressed
+                    direction = self.player.get_dir()  # Get the current direction
+                    self.player.teleport(direction)
                     self.player.teleport()
                 # Handle other actions related to spacebar press here
                 # For example, coin collection, speed boost activation, etc.
-                    coin_hits = pg.sprite.spritecollide(self.player, self.coins, True)
-                    if coin_hits:  
-                        for coin in coin_hits:
-                            self.collect_coin(coin)
-                    else:
-                        speedboost_hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
-                    if speedboost_hits:
+                coin_hits = pg.sprite.spritecollide(self.player, self.coins, True)
+                if coin_hits:  
+                    for coin in coin_hits:
+                        self.collect_coin(coin)
+                else:
+                    speedboost_hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
+                if speedboost_hits:
                         self.activate_speed_boost()
                   # when player hits coin and speedboost it activtes the functions
        # when i collect coins it adds to the coin counter
@@ -206,7 +209,7 @@ class Game:
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Wall(self, col, row)
+                     Wall(self, col, row)
                 elif tile == 'P':
                     self.player = Player(self, col, row)
                 elif tile == 'M':
@@ -224,6 +227,7 @@ class Game:
 
 
 
+
 g = Game()
 while True:
     g.new()
@@ -232,4 +236,4 @@ while True:
      
 # I told the game to run
  
- 
+  
