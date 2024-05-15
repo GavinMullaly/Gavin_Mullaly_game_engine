@@ -58,6 +58,8 @@ class Player(Sprite): # ths player is defined as self
         self.rect = self.image.get_rect()
         self.current_frame = 0
         self.last_update = 0
+        self.rect.x = self.x
+        self.rect.y = self.y
         self.dir = vec(0,0)
     
     def set_dir(self, d):
@@ -67,8 +69,8 @@ class Player(Sprite): # ths player is defined as self
         return vec(self.dir)
    
     def teleport(self, direction):
-        self.x += TILESIZE * 2 * direction[0]
-        self.y += TILESIZE * 2 * direction[1]
+        self.x += TILESIZE * 1 * direction[0]
+        self.y += TILESIZE * 1 * direction[1]
         
         
         
@@ -116,24 +118,24 @@ class Player(Sprite): # ths player is defined as self
             
     # when the player touches the wall it stops it from going through the wall
     def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vx < 0:
-                    self.x = hits[0].rect.right
-                self.vx = 0
-                self.rect.x = self.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vy < 0:
-                    self.y = hits[0].rect.bottom
-                self.vy = 0
-                self.rect.y = self.y
+            if dir == 'x':
+                hits = pg.sprite.spritecollide(self, self.game.walls, False)
+                if hits:
+                    if self.vx > 0:
+                        self.x = hits[0].rect.left - self.rect.width
+                    if self.vx < 0:
+                        self.x = hits[0].rect.right
+                    self.vx = 0
+                    self.rect.x = self.x
+            if dir == 'y':
+                hits = pg.sprite.spritecollide(self, self.game.walls, False)
+                if hits:
+                    if self.vy > 0:
+                        self.y = hits[0].rect.top - self.rect.height
+                    if self.vy < 0:
+                        self.y = hits[0].rect.bottom
+                    self.vy = 0
+                    self.rect.y = self.y
     # My wall stop the player and mobs from going through it
     def collide_with_Mob(self, kill):
         hits = pg.sprite.spritecollide(self, self.game.mobs, kill)
@@ -152,9 +154,9 @@ class Player(Sprite): # ths player is defined as self
         self.draw_health_bar()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
-        #self.rect.x = self.x + self.teleport
+        self.rect.x = self.x
         self.collide_with_walls('x')
-        #self.rect.y = self.y + self.teleport
+        self.rect.y = self.y  
         self.collide_with_walls('y')
         if self.collide_with_Mob(False):
             if self.lives == -1:

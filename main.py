@@ -13,6 +13,8 @@ from random import randint
 from os import path
 from time import sleep
 from random import randint
+
+vec =pg.math.Vector2
 # How does def_load_data work and why do we need it in out code?
 
 # Five things that make a game Good is, 1# its enjoyable and fun 2# its not to easy, 
@@ -161,9 +163,8 @@ class Game:
                 self.quit()
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
-                    direction = self.player.get_dir()  # Get the current direction
+                    direction = self.player.get_dir()
                     self.player.teleport(direction)
-                    self.player.teleport()
                 # Handle other actions related to spacebar press here
                 # For example, coin collection, speed boost activation, etc.
                 coin_hits = pg.sprite.spritecollide(self.player, self.coins, True)
