@@ -61,7 +61,7 @@ class Player(Sprite): # ths player is defined as self
         self.rect.x = self.x
         self.rect.y = self.y
         self.dir = vec(0,0)
-    
+    # Teleport Created with the help of Mr. Cozort and modified from Chat GPT
     def set_dir(self, d):
         self.dir = d
         #return (0,0)
@@ -71,11 +71,11 @@ class Player(Sprite): # ths player is defined as self
     def teleport(self, direction):
         self.x += TILESIZE * 1 * direction[0]
         self.y += TILESIZE * 1 * direction[1]
-        
-        
-        
-
     
+         
+
+
+    # Copied from Chat GPT
     
     def draw_health_bar(self):
         # The Health bar Calculates the width of health bar based on remaining lives the player has
@@ -93,6 +93,7 @@ class Player(Sprite): # ths player is defined as self
         
 
     # My Movement system, When pressing arrow keys or wasd the play moves up down left or right
+    
     def get_keys(self): 
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
@@ -143,7 +144,13 @@ class Player(Sprite): # ths player is defined as self
             self.lives -=1
             print(self.lives)
             return True
-        
+    
+    def collide_with_death(self, kill):
+        hits = pg.sprite.spritecollide(self, self.game.deaths, kill)
+        if hits:
+            self.lives -=1
+            print(self.lives)
+            return True
     # when the player collides with a mob they lose 1 life
                 
     
@@ -161,10 +168,14 @@ class Player(Sprite): # ths player is defined as self
         if self.collide_with_Mob(False):
             if self.lives == -1:
                 self.game.player.kill()
+        if self.collide_with_death(False):
+            if self.lives == -1:
+                self.game.player.kill()
         hits = pg.sprite.spritecollide(self, self.game.coins, True)
         for hit in hits:
             if isinstance(hit, Coin):
                 self.moneybag += 1
+        # Modified from Chat GPT
         hits = pg.sprite.spritecollide(self, self.game.coins, True)
         if hits:
             self.timer_duration += 10000
@@ -208,6 +219,7 @@ class Coin(pg.sprite.Sprite):
 
     # this coin system creates the coin to be a tile long as the coin is orange
 # My SpeedBoost class
+# Copied from chat GPT
 class SpeedBoost(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.speedboosts
@@ -285,5 +297,17 @@ class Finish(pg.sprite.Sprite):
         finish_hits = pg.sprite.spritecollide(player, self.game.finishes, False)
         for finish in finish_hits:
             self.game.load_next_map(next_map) 
+
+
+class Death(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.deaths
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE 
 
         

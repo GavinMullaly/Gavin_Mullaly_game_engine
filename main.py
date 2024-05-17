@@ -42,13 +42,13 @@ class Game:
         self.speed_boost_start_time = 0
         self.current_map = "map_1.txt"
     
-    
+    # Modified from Chat GPT
     def activate_speed_boost(self):
         # Activate speed boost
         self.speed_boost_active = True
         self.speed_boost_start_time = pg.time.get_ticks()
         
-    
+          
     def load_data(self): # this loads the game and the map
         game_folder = path.dirname(__file__) 
         self.map_data = []
@@ -68,6 +68,7 @@ class Game:
         self.coins = pg.sprite.Group()
         self.finishes=pg.sprite.Group()
         self.speedboosts = pg.sprite.Group()
+        self.deaths = pg.sprite.Group()
         self.player_speed = PLAYER_SPEED # this line creates the players speed attribute
         for row, tiles in enumerate(self.map_data): # this code creates corresponding tiles from the map text
             for col, tile in enumerate(tiles):
@@ -83,9 +84,11 @@ class Game:
                     SpeedBoost(self, col, row)
                 if tile == 'F':
                     Finish(self,col, row)
+                if tile == 'D':
+                    Death(self,col, row)
     
     # In the Map.txt 1 = wall P= player and M = Mob
-            
+            # Copied form Chat GPT
             self.timer_start = pg.time.get_ticks() 
         self.timer_duration = 60000  # 1/2 minute in milliseconds
         # this is the amount of time I have to complete the game 30 secs
@@ -102,7 +105,9 @@ class Game:
         pg.quit()
         sys.exit()
 # When I press the quit button the game ends
-    
+   
+    # Modified from ChatGPT
+   
     def update(self): # def update, updates the all the games sprites 
         self.all_sprites.update()
         hits = pg.sprite.spritecollide(self.player, self.speedboosts, True)
@@ -137,6 +142,7 @@ class Game:
              # this adds 10 secs to the timer when a coin is collected
             
         # this code       creates the arial font for my text
+        # Copied from Chat GPT
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -190,6 +196,7 @@ class Game:
     
 
 # I Used Chat GPT to create new maps when I collide with the finish blocks
+    # Modified from Chat GPT
     def load_next_map(self, next_map):
         # Load the next map from the specified filename
         self.current_map =  next_map
@@ -198,12 +205,17 @@ class Game:
             for line in f:
                 self.map_data.append(line.strip())
 
+
+      
+
+
         # Clear existing sprite groups
         self.all_sprites.empty()
         self.walls.empty()
         self.mobs.empty()
         self.speedboosts.empty()
         self.finishes.empty()
+        self.deaths.empty()
 
 
         # Create new sprites based on the loaded map data
@@ -221,6 +233,9 @@ class Game:
                     SpeedBoost(self, col, row)
                 elif tile == 'F':
                     Finish(self, col, row)
+                elif tile == 'D':
+                    Death(self, col, row)
+                
 
 
 
